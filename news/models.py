@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -32,7 +33,10 @@ class Author(models.Model):
         for i in Post.objects.filter(user=self):
             for j in i.comment_set.all().values_list('rating_comment'):
                 self.rating_user += j[0]
-        self.save()                
+        self.save()
+        
+    def __str__(self) -> str:
+        return f"{self.user.username}"                
             
         
 class Category(models.Model):
@@ -41,7 +45,10 @@ class Category(models.Model):
     Имеет единственное поле: 
         +название категории. 
     Поле должно быть уникальным (в определении поля необходимо написать параметр unique = True)."""
-    category = models.CharField(max_length=255, unique=True)    
+    category = models.CharField(max_length=255, unique=True)
+    
+    def __str__(self) -> str:
+        return f"{self.category}"    
 
 
 class Post(models.Model):
@@ -99,6 +106,9 @@ class Post(models.Model):
             return self.text
         else:
             return self.text[:124] + "..."
+        
+    def __str__(self) -> str:
+        return f"{self.title} / {self.text[:30]}"
 
 
 class PostCategory(models.Model):
@@ -108,6 +118,8 @@ class PostCategory(models.Model):
         +связь «один ко многим» с моделью Category."""
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    
+    
     
 
 class Comment(models.Model):
@@ -140,3 +152,6 @@ class Comment(models.Model):
         """
         self.rating_comment -= 1
         self.save()
+        
+    def __str__(self) -> str:
+        return f"{self.post.title} / {self.text[:20]}"

@@ -1,0 +1,17 @@
+<!--  наследуемся от шаблона default.html, который мы создавали -->
+{% extends 'news/default.html' %}
+
+{% load custom_filters %}
+
+<!-- Название у нас будет New -->
+{% block title %}
+New
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим новость, идентификатор которого был передан в url -->
+{% block content %}
+<h1>{{ new.title|censor }}</h1>
+<h4>{{ new.date_added|date:'D M Y' }}</h4>
+<h4>{{ new.text|censor }}</h4>
+<h4>Автор {{ new.user.user }}</h4>
+{% endblock content %}
