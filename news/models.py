@@ -1,6 +1,7 @@
 from typing import Any
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class Author(models.Model):
@@ -109,6 +110,9 @@ class Post(models.Model):
         
     def __str__(self) -> str:
         return f"{self.title} / {self.text[:30]}"
+    
+    def get_absolute_url(self):
+        return reverse('news:new', args=[str(self.id)])
 
 
 class PostCategory(models.Model):

@@ -1,0 +1,20 @@
+<!--  наследуемся от шаблона default.html, который мы создавали -->
+{% extends 'news/default.html' %}
+
+
+
+<!-- Название у нас будет New ...-->
+{% block title %}
+New Article Create
+{% endblock title %}
+
+<!-- В контенте на странице мы вводим статью -->
+{% block content %}
+<h1>Новая статья</h1>
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save" />
+</form>
+{% endblock content %}
