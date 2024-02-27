@@ -1,6 +1,7 @@
 import datetime
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -65,7 +66,9 @@ class PostDetailView(DetailView):
     context_object_name = 'new'
 
 
-class ArtCreate(CreateView):
+class ArtCreate(PermissionRequiredMixin, CreateView):
+    raise_exception = True
+    permission_required = ('news.add_news',)
     # Указываем нашу разработанную форму
     form_class = PostArticleCreate
     # модель статьи
@@ -75,19 +78,25 @@ class ArtCreate(CreateView):
     
     
 # Добавляем представление для изменения статьи.
-class ArtEdit(UpdateView):    
+class ArtEdit(PermissionRequiredMixin, UpdateView):
+    raise_exception = True
+    permission_required = ('news.change_news',)    
     form_class = PostArticleCreate
     model = Post
     template_name = 'postartcreate.html'
     
     
-class ArtDelete(DeleteView):
+class ArtDelete(PermissionRequiredMixin, DeleteView):    
+    raise_exception = True
+    permission_required = ('news.delete_news',)
     model = Post
     template_name = 'article_delete.html'
     success_url = reverse_lazy('news:news')
     
     
-class NewCreate(CreateView):
+class NewCreate(PermissionRequiredMixin, CreateView):
+    raise_exception = True
+    permission_required = ('news.add_news',)
     # Указываем нашу разработанную форму
     form_class = PostArticleCreate
     # модель товаров
@@ -101,13 +110,17 @@ class NewCreate(CreateView):
         return super().form_valid(form)
     
     
-class NewEdit(UpdateView):    
+class NewEdit(PermissionRequiredMixin, UpdateView):
+    raise_exception = True
+    permission_required = ('news.change_news',)
     form_class = PostArticleCreate
     model = Post
     template_name = 'postartcreate.html'
     
     
-class NewDelete(DeleteView):
+class NewDelete(PermissionRequiredMixin, DeleteView):
+    raise_exception = True
+    permission_required = ('news.delete_news',)
     model = Post
     template_name = 'article_delete.html'
     success_url = reverse_lazy('news:news')

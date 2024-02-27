@@ -30,11 +30,20 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/about/">About us</a>
+                            <a class="nav-link" href="/accounts/logout/">log out</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/contacts/">Contact</a>
+                            <a class="nav-link" href="/accounts/login/">login</a>
                         </li>
+                        {# Теперь будем проверять не request.user.is_authenticated, а конкретные права #}
+                        {% if perms.news.add_post %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'news:news_create' %}">Добавить новость</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'news:articles_create' %}">Добавить статью</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

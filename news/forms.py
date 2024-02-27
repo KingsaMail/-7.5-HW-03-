@@ -8,3 +8,4 @@ class PostArticleCreate(forms.ModelForm):
         model = Post
         fields = ['title', 'text', 'categories', 'user']
         
+
