@@ -123,8 +123,6 @@ class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     
-    
-    
 
 class Comment(models.Model):
     """Модель Comment
@@ -159,3 +157,4 @@ class Comment(models.Model):
         
     def __str__(self) -> str:
         return f"{self.post.title} / {self.text[:20]}"
+    

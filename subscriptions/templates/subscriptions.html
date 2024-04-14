@@ -1,0 +1,43 @@
+{% extends "news/default.html" %}
+
+{% block title %}
+Subscriptions
+{% endblock title %}
+
+{% block content %}
+<table>
+    <tr>
+        <td>Стататус подписки</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><hr></td>
+        <td><hr></td>
+    </tr>
+{% for category in categories  %}    
+    <tr>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="category_id" value="{{ category.id }}" />
+
+        {% if category.user_subscribed %}
+            <td>
+                Вы подписанны на {{ category.category }}
+            </td>
+            <td>
+                <button name="action" value="unsubscribe">Отписаться</button>
+            </td>
+        {% else %}
+            <td>
+                <button name="action" value="subscribe">Подписаться</button>
+            </td>
+            <td>
+                 на категорию {{ category.category }}
+            </td>
+                                   
+        {% endif %}
+    </form>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

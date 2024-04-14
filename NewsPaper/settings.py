@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'news',
     'accounts',
     'django_filters',
+    'subscriptions.apps.SubscriptionsConfig',
     
     #site
     'django.contrib.sites',
@@ -51,6 +52,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.yandex',
+    
+    # задачи по расписанию
+    "django_apscheduler",
 ]
 
 SITE_ID = 1
@@ -154,3 +158,15 @@ LOGIN_REDIRECT_URL = "/news"
 LOGOUT_REDIRECT_URL = "/news"
 
 ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "kingmsa@yandex.ru"
+EMAIL_HOST_PASSWORD = "firdjhpfmbrzqwhs"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = "kingmsa@yandex.ru"
+
+SERVER_EMAIL = "example@yandex.ru"

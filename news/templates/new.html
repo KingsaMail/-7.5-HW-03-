@@ -11,16 +11,33 @@ New
 <!-- В контенте на странице мы выводим новость, идентификатор которого был передан в url -->
 {% block content %}
 <h1>{{ new.title|censor }}</h1>
-<h4>{{ new.date_added|date:'D M Y' }}</h4>
+<h4>
+    {{ new.date_added|date:'D M Y' }}
+    {% if new.post == 'A' %}
+        Статья в категории(ях): 
+        {% for category in categories %}
+            {{ category }}
+        {% endfor %}
+    {% else %}
+        Новость в категории(ях):
+        {% for category in categories %}
+            {{ category }}
+        {% endfor %}
+    {% endif %}
+</h4>
 <h4>{{ new.text|censor }}</h4>
 <h4>Автор {{ new.user.user }}</h4>
-{# Добавим кнопку редактирования товара #}
+{# Добавим кнопку редактирования #}
 <p>
-   {% if perms.news.change_news %}
+   {% if perms.news.change_post %}
         {% if new.post == 'A' %}
-            <a href="{% url 'news:articles_edit' new.pk %}" class="btn btn-primary">Редактировать статью</a>
+            {% if request.user == new.user.user %}
+                <a href="{% url 'news:articles_edit' new.pk %}" class="btn btn-primary">Редактировать статью</a>
+            {% endif %}
         {% else %}
-            <a href="{% url 'news:news_edit' new.pk %}" class="btn btn-primary">Редактировать новость</a> 
+            {% if user.username == new.user.user.username %}
+                <a href="{% url 'news:news_edit' new.pk %}" class="btn btn-primary">Редактировать новость</a>
+            {% endif %} 
         {% endif %}
    {% endif %}
 </p>

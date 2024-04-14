@@ -1,13 +1,15 @@
 import datetime
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+# from requests import request
 
-from .models import Post
+from .models import Author, Post
 from .filters import NewsFilter
-from .forms import PostArticleCreate 
+from .forms import PostArticleCreate
+from pprint import pprint 
 
 class PostListView(ListView):
     """Сделайте новую страничку с адресом /news/, на которой должен выводиться список всех новостей."""
@@ -63,12 +65,17 @@ class PostDetailView(DetailView):
     # Используем другой шаблон — new.html
     template_name = 'new.html'
     # Название объекта, в котором будет выбранный пользователем пост.статья
-    context_object_name = 'new'
-
+    context_object_name = 'new'    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Post.objects.get(pk=self.kwargs['pk']).categories.values_list('category', flat=True)
+        return context
+    
 
 class ArtCreate(PermissionRequiredMixin, CreateView):
     raise_exception = True
-    permission_required = ('news.add_news',)
+    permission_required = ('news.add_post',)
     # Указываем нашу разработанную форму
     form_class = PostArticleCreate
     # модель статьи
@@ -76,11 +83,18 @@ class ArtCreate(PermissionRequiredMixin, CreateView):
     # и новый шаблон, в котором используется форма.
     template_name = 'postartcreate.html'
     
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.user = Author.objects.get(user=self.request.user)
+        instance.save()
+        
+        return super().form_valid(form)
+    
     
 # Добавляем представление для изменения статьи.
 class ArtEdit(PermissionRequiredMixin, UpdateView):
     raise_exception = True
-    permission_required = ('news.change_news',)    
+    permission_required = ('news.change_post',)    
     form_class = PostArticleCreate
     model = Post
     template_name = 'postartcreate.html'
@@ -88,7 +102,7 @@ class ArtEdit(PermissionRequiredMixin, UpdateView):
     
 class ArtDelete(PermissionRequiredMixin, DeleteView):    
     raise_exception = True
-    permission_required = ('news.delete_news',)
+    permission_required = ('news.delete_post',)
     model = Post
     template_name = 'article_delete.html'
     success_url = reverse_lazy('news:news')
@@ -96,7 +110,7 @@ class ArtDelete(PermissionRequiredMixin, DeleteView):
     
 class NewCreate(PermissionRequiredMixin, CreateView):
     raise_exception = True
-    permission_required = ('news.add_news',)
+    permission_required = ('news.add_post',)
     # Указываем нашу разработанную форму
     form_class = PostArticleCreate
     # модель товаров
@@ -104,15 +118,25 @@ class NewCreate(PermissionRequiredMixin, CreateView):
     # и новый шаблон, в котором используется форма.
     template_name = 'postartcreate.html'
     
+    # def form_valid(self, form):
+    #     news = form.save(commit=False)
+    #     news.post = 'news'
+    #     return super().form_valid(form)
+    
     def form_valid(self, form):
-        news = form.save(commit=False)
-        news.post = 'news'
+        instance = form.save(commit=False)
+        # print(self.request.user)
+        instance.user = Author.objects.get(user=self.request.user)
+        instance.post = 'news'
+        instance.save()
+        
         return super().form_valid(form)
+    
     
     
 class NewEdit(PermissionRequiredMixin, UpdateView):
     raise_exception = True
-    permission_required = ('news.change_news',)
+    permission_required = ('news.change_post',)
     form_class = PostArticleCreate
     model = Post
     template_name = 'postartcreate.html'
@@ -120,7 +144,7 @@ class NewEdit(PermissionRequiredMixin, UpdateView):
     
 class NewDelete(PermissionRequiredMixin, DeleteView):
     raise_exception = True
-    permission_required = ('news.delete_news',)
+    permission_required = ('news.delete_post',)
     model = Post
     template_name = 'article_delete.html'
     success_url = reverse_lazy('news:news')

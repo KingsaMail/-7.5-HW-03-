@@ -15,7 +15,7 @@
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
             <div class="container">
-                <a class="navbar-brand" href="#">Newspaper</a>
+                <a class="navbar-brand" href="">Newspaper</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarResponsive"
                         aria-controls="navbarResponsive" aria-expanded="false"
@@ -29,19 +29,38 @@
                                 <span class="sr-only">(главная)</span>
                             </a>
                         </li>
+                        {% if request.user.username %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/accounts/logout/">log out</a>
+                            <a class="nav-link" href="{% url 'account_logout' %}">log out</a>
                         </li>
+                        {% endif %}
+                        {% if not request.user.username %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/accounts/login/">login</a>
+                            <a class="nav-link" href="{% url 'account_signup' %}">log in(signup)</a>
                         </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="">{{ request.user.username }}</a>
+                        </li>
+                        {% endif %}
                         {# Теперь будем проверять не request.user.is_authenticated, а конкретные права #}
                         {% if perms.news.add_post %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'news:news_create' %}">Добавить новость</a>
                         </li>
+                        {% endif %}
+                        {# Теперь будем проверять не request.user.is_authenticated, а конкретные права #}
+                        {% if perms.news.add_post %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'news:articles_create' %}">Добавить статью</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'news:search' %}">Поиск</a>
+                        </li>
+                        {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'subscriptions' %}">Подписки</a>
                         </li>
                         {% endif %}
                     </ul>
