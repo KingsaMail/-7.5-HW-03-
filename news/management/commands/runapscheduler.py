@@ -29,7 +29,9 @@ def my_job():
     for email in emails:
         if not email:
             continue
-        posts_send = Post.objects.filter(date_added__gte=last_week, categories__subscriptions__user__email=email).distinct()
+        posts_send = Post.objects.filter(date_added__gte=last_week,
+                                         categories__subscriptions__user__email=email,
+                                         ).distinct()
         
         html_content = render_to_string(
             'send_posts.html',
@@ -64,7 +66,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             my_job,
-            trigger=CronTrigger(second="*/30"), #day_of_week="fri", hour="18", minute="00"),
+            trigger=CronTrigger(day_of_week="fri", hour="18", minute="00"),
             id="my_job",  # The `id` assigned to each job MUST be unique second="*/30"
             max_instances=1,
             replace_existing=True,
