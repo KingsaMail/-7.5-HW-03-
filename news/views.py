@@ -1,9 +1,12 @@
 import datetime
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
+#from news.tasks import hello для эксперемента
 # from requests import request
 
 from .models import Author, Post
@@ -24,6 +27,11 @@ class PostListView(ListView):
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'news'
     paginate_by = 10 # количество записей на странице
+    
+    #функция для отработки celery
+    """def get(self, request):
+        hello.delay()
+        return HttpResponse('Hello!')"""
     
     
 class PostListFilter(ListView):

@@ -3,6 +3,8 @@ from django.db.models.signals import m2m_changed
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver
 
+from news.tasks import send_to_users
+
 from .models import PostCategory
 
 
@@ -32,8 +34,10 @@ def post_created(sender, instance, **kwargs):
         f'Ссылка на статью (новость)</a>'
         )
         
-        for email in emails:
+        send_to_users.delay(subject, text_content, html_content, [emails])
+        
+        """for email in emails:
             msg = EmailMultiAlternatives(subject, text_content, None, [email])
             msg.attach_alternative(html_content, "text/html")
-            msg.send() 
+            msg.send() """
     
